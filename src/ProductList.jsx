@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { addItem } from "./CartSlice";
 
 const plantsArray = [
@@ -41,21 +41,26 @@ const plantsArray = [
 
 const ProductList = () => {
   const [addedToCart, setAddedToCart] = useState({});
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity); // Get total quantity from Redux
   const dispatch = useDispatch();
 
   const handleAddToCart = (plant) => {
-    dispatch(addItem(plant));
+    dispatch(addItem(plant)); // Dispatch addItem action to Redux store
     setAddedToCart((prevState) => ({
       ...prevState,
-      [plant.name]: true, // Set the product name as key to indicate it's added
+      [plant.name]: true, // Mark plant as added to cart
     }));
   };
 
   return (
     <div className="product-grid">
+      <header>
+        <h1>Paradise Nursery</h1>
+        <div className="cart-info">Cart Items: {totalQuantity}</div>
+      </header>
       {plantsArray.map((category, index) => (
         <div key={index}>
-          <h1>{category.category}</h1>
+          <h2>{category.category}</h2>
           <div className="product-list">
             {category.plants.map((plant, plantIndex) => (
               <div className="product-card" key={plantIndex}>
