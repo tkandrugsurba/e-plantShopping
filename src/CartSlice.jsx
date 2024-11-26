@@ -4,26 +4,32 @@ export const CartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [], // Initialize items as an empty array
+    totalQuantity: 0, // Track total quantity
   },
   reducers: {
     addItem: (state, action) => {
-      const existingItem = state.items.find(
-        (item) => item.name === action.payload.name
-      );
+      const { name, image, cost } = action.payload;
+      const existingItem = state.items.find((item) => item.name === name);
       if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity++;
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({ name, image, cost, quantity: 1 });
       }
+      state.totalQuantity++; // Update total quantity
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter((item) => item.name !== action.payload);
+      const itemToRemove = state.items.find((item) => item.name === action.payload);
+      if (itemToRemove) {
+        state.totalQuantity -= itemToRemove.quantity; // Deduct quantity from total
+        state.items = state.items.filter((item) => item.name !== action.payload);
+      }
     },
     updateQuantity: (state, action) => {
       const { name, quantity } = action.payload;
-      const item = state.items.find((item) => item.name === name);
-      if (item) {
-        item.quantity = quantity;
+      const itemToUpdate = state.items.find((item) => item.name === name);
+      if (itemToUpdate) {
+        state.totalQuantity += quantity - itemToUpdate.quantity; // Adjust total quantity
+        itemToUpdate.quantity = quantity;
       }
     },
   },
