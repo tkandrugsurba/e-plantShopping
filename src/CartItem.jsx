@@ -1,29 +1,29 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeItem, updateQuantity } from "./CartSlice";
+import { addItem, updateQuantity, removeItem } from "./CartSlice";
 
 const CartItem = () => {
-  const cartItems = useSelector((state) => state.cart.items);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const cartItems = useSelector((state) => state.cart.items); // Retrieve items from Redux
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity); // Retrieve total quantity from Redux
   const dispatch = useDispatch();
 
   const calculateTotalAmount = () =>
     cartItems.reduce((total, item) => total + item.cost * item.quantity, 0);
 
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+    dispatch(addItem(item)); // Dispatch addItem action to increment item
   };
 
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 })); // Decrease quantity
     } else {
-      dispatch(removeItem(item.name));
+      dispatch(removeItem(item.name)); // Remove item if quantity is zero
     }
   };
 
   const handleRemove = (name) => {
-    dispatch(removeItem(name));
+    dispatch(removeItem(name)); // Dispatch removeItem action
   };
 
   const handleCheckoutShopping = () => {
